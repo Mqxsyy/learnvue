@@ -1,5 +1,25 @@
 import { createApp } from "vue";
 import "./style.scss";
 import App from "./App.vue";
+import { createRouter, createWebHistory } from "vue-router";
 
-createApp(App).mount("#app");
+import Home from "./pages/Home.vue";
+import ToDo from "./pages/ToDo.vue";
+import Modals from "./pages/Modals.vue";
+
+const routes = [
+	{ path: "/", component: Home, name: "Home" },
+	{ path: "/todo", component: ToDo, name: "ToDo" },
+	{ path: "/modals", component: Modals, name: "Modals" },
+];
+
+const router = createRouter({
+	history: createWebHistory(),
+	routes,
+});
+
+const app = createApp(App);
+
+app.use(router);
+
+app.mount("#app");
