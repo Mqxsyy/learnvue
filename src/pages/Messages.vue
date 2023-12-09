@@ -75,7 +75,7 @@ function GetRandomMessageSize() {
 	>
 		<template #header> Message 3 </template>
 		<template #body>
-			Random visual parameters (randomizes on page refresh)
+			Random visual parameters (randomizes when page changes)
 		</template>
 	</Message>
 </template>
