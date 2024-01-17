@@ -4,5 +4,7 @@ import Tabs from "./components/Tabs.vue";
 
 <template>
 	<Tabs></Tabs>
-	<router-view></router-view>
+	<Suspense>
+		<router-view></router-view>
+	</Suspense>
 </template>
