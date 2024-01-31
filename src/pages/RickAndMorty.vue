@@ -9,18 +9,19 @@ let page = ref(1);
 
 GetCharacters(page.value);
 
-async function GetCharacters(page) {
+async function GetCharacters(pageNumber) {
 	const response = await axios.get(
 		"https://rickandmortyapi.com/api/character",
 		{
 			params: {
-				page,
+				page: pageNumber,
 			},
 		}
 	);
 
 	info.value = response.data.info;
 	chars.value = response.data.results;
+	page.value = pageNumber;
 }
 
 async function Next() {
@@ -29,6 +30,29 @@ async function Next() {
 
 async function Previous() {
 	GetCharacters(--page.value);
+}
+
+function MakePagination(current, total) {
+	let pages = [];
+	for (let i = 1; i <= 3; i++) {
+		pages[i] = i;
+	}
+
+	if (current > 2 && current < total - 1) {
+		pages.push("...");
+
+		for (let i = current - 1; i <= current + 1; i++) {
+			pages[i] = i;
+		}
+	}
+
+	pages.push("...");
+
+	for (let i = total - 2; i <= total; i++) {
+		pages[i] = i;
+	}
+
+	return pages.filter((value) => value);
 }
 </script>
 
@@ -41,63 +65,17 @@ async function Previous() {
 				</button>
 			</p>
 
-			<p v-for="num in 3" :key="num" class="control">
-				<button class="button">
+			<p
+				v-for="num in MakePagination(page, info.pages)"
+				:key="num"
+				class="control"
+			>
+				<button
+					class="button"
+					:class="{ 'is-static': num === '...', 'is-primary': num === page }"
+					@click="GetCharacters(num)"
+				>
 					<span>{{ num }}</span>
-				</button>
-			</p>
-
-			<p class="control">
-				<button class="button is-static">
-					<span>...</span>
-				</button>
-			</p>
-
-			<p class="control">
-				<button class="button">
-					<span>{{ page - 2 }}</span>
-				</button>
-			</p>
-			<p class="control">
-				<button class="button">
-					<span>{{ page - 1 }}</span>
-				</button>
-			</p>
-			<p class="control">
-				<button class="button is-primary">
-					<span>{{ page }}</span>
-				</button>
-			</p>
-			<p class="control">
-				<button class="button">
-					<span>{{ page + 1 }}</span>
-				</button>
-			</p>
-			<p class="control">
-				<button class="button">
-					<span>{{ page + 2 }}</span>
-				</button>
-			</p>
-
-			<p class="control">
-				<button class="button is-static">
-					<span>...</span>
-				</button>
-			</p>
-
-			<p class="control">
-				<button class="button">
-					<span>{{ info.pages - 2 }}</span>
-				</button>
-			</p>
-			<p class="control">
-				<button class="button">
-					<span>{{ info.pages - 1 }}</span>
-				</button>
-			</p>
-			<p class="control">
-				<button class="button">
-					<span>{{ info.pages }}</span>
 				</button>
 			</p>
 
