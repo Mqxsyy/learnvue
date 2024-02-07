@@ -1,24 +1,36 @@
 <script setup>
 import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { onMounted, getCurrentInstance } from "vue";
+import { ref, onMounted, defineProps, watch } from "vue";
 
-const uid = getCurrentInstance().uid;
-console.log(uid);
+const props = defineProps(["center", "zoom", "markers"]);
+const mapEL = ref(null);
+let map;
 
 onMounted(() => {
-	const map = L.map(`map_${uid}`).setView([51.505, -0.09], 13);
+	map = L.map(mapEL.value).setView(props.center, props.zoom);
 
 	L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 		maxZoom: 19,
 		attribution:
 			'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 	}).addTo(map);
+
+	for (const marker of props.markers) {
+		L.marker(marker).addTo(map);
+	}
 });
+
+watch(
+	() => props.center,
+	() => {
+		map.flyTo(props.center, props.zoom);
+	}
+);
 </script>
 
 <template>
-	<div :id="`map_${uid}`"></div>
+	<div ref="mapEL"></div>
 </template>
 
 <style scoped>
