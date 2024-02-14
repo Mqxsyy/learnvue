@@ -1,7 +1,7 @@
 <script setup>
 import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { ref, onMounted, defineProps, watch } from "vue";
+import { ref, onMounted, watch } from "vue";
 
 const props = defineProps(["center", "zoom", "markers"]);
 const mapEL = ref(null);
