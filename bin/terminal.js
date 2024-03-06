@@ -1,13 +1,13 @@
-import chalk from "chalk";
-import boxen from "boxen";
+import ProgressBar from "progress";
 
-// console.log(chalk.blue.bgGreen.underline("Hello world!"));
+const bar = new ProgressBar("  downloading [:bar] :rate/bps :percent :etas", {
+	total: 50,
+});
 
-console.log(
-	boxen(chalk.blue.bgGreen.underline("Hello world!"), {
-		padding: 1,
-		margin: 1,
-		borderStyle: "doubleSingle",
-		title: "Hello world!",
-	})
-);
+const timer = setInterval(() => {
+	bar.tick();
+
+	if (bar.complete) {
+		clearInterval(timer);
+	}
+}, 100);
