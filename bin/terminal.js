@@ -1,18 +1,51 @@
 // https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
 
+import readline from "node:readline";
+
 function write(text) {
 	process.stdout.write(text);
 }
 
-let date = new Date();
+readline.emitKeypressEvents(process.stdin);
 
-write(date.toTimeString().substring(0, 8));
+console.clear();
+write("@");
 
-setInterval(() => {
-	date = new Date();
+process.stdin.on("keypress", (ch, key) => {
+	if (key && key.ctrl && key.name == "c") {
+		console.clear();
+		process.exit();
+	}
 
-	write("\x1B[?25l");
-	write("\x1B[8D");
-	write(date.toTimeString().substring(0, 8));
-	write("\x1B[?25h");
-}, 10);
+	if (key && key.name == "w") {
+		write("\x1B[1D");
+		write(" ");
+		write("\x1B[1D");
+		write("\x1B[1A");
+		write("@");
+	}
+
+	if (key && key.name == "s") {
+		write("\x1B[1D");
+		write(" ");
+		write("\x1B[1D");
+		write("\x1B[1B");
+		write("@");
+	}
+
+	if (key && key.name == "a") {
+		write("\x1B[1D");
+		write(" ");
+		write("\x1B[2D");
+		write("@");
+	}
+
+	if (key && key.name == "d") {
+		write("\x1B[1D");
+		write(" ");
+		write("@");
+	}
+});
+
+process.stdin.setRawMode(true);
+process.stdin.resume();
