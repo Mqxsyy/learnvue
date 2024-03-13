@@ -8,25 +8,31 @@ if (!fs.existsSync("cache")) {
 	fs.mkdirSync("cache");
 }
 
-for (let i = 2905; i > 2895; i--) {
-	let cacheName = `cache/${i}.html`;
+const baseUrl = "https://wumo.com";
+let link = "/wumo/2024/03/13";
+
+for (let i = 0; i < 10; i++) {
+	const cacheName = link.replaceAll("/", "");
+	const cacheFile = `cache/${cacheName}.html`;
 	let data;
 
 	if (!fs.existsSync(cacheName)) {
 		await sleep(1000);
 
-		let res = await axios.get(`https://xkcd.com/${i}/`);
+		let res = await axios.get(baseUrl + link);
 		data = res.data;
 
-		fs.writeFileSync(cacheName, data);
+		fs.writeFileSync(cacheFile, data);
 	} else {
-		data = fs.readFileSync(cacheName);
+		data = fs.readFileSync(cacheFile);
 	}
 
 	const $ = cheerio.load(data);
-	let img = $("div#comic>img");
+	let img = $("div.box-content>a>img");
 
 	console.log(img.attr("src"));
-	console.log(img.attr("title"));
 	console.log(img.attr("alt"));
+
+	const a = $("a.prev");
+	link = a.attr("href");
 }
