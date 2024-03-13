@@ -1,6 +1,7 @@
 import axios from "axios";
-import * as cheerio from "cheerio";
 import fs from "node:fs";
+
+// TODO: homework: make a scraper (comic?) (10 pages)
 
 const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
@@ -8,31 +9,31 @@ if (!fs.existsSync("cache")) {
 	fs.mkdirSync("cache");
 }
 
-const baseUrl = "https://wumo.com";
-let link = "/wumo/2024/03/13";
-
-for (let i = 0; i < 10; i++) {
-	const cacheName = link.replaceAll("/", "");
-	const cacheFile = `cache/${cacheName}.html`;
+for (let i = 1; i <= 10; i++) {
+	const cacheFile = `cache/${i}.json`;
 	let data;
 
-	if (!fs.existsSync(cacheName)) {
+	if (!fs.existsSync(cacheFile)) {
+		console.log("Fetching page", i);
 		await sleep(1000);
 
-		let res = await axios.get(baseUrl + link);
+		let res = await axios.post("https://kinnisvara24.ee/search", {
+			page: i,
+		});
 		data = res.data;
 
-		fs.writeFileSync(cacheFile, data);
+		fs.writeFileSync(cacheFile, JSON.stringify(data));
 	} else {
-		data = fs.readFileSync(cacheFile);
+		data = JSON.parse(fs.readFileSync(cacheFile));
 	}
 
-	const $ = cheerio.load(data);
-	let img = $("div.box-content>a>img");
+	data.data.forEach((advertisement) => {
+		console.log(advertisement.hind);
 
-	console.log(img.attr("src"));
-	console.log(img.attr("alt"));
-
-	const a = $("a.prev");
-	link = a.attr("href");
+		if (advertisement.address.address) {
+			console.log(advertisement.address.address);
+		} else {
+			console.log(advertisement.address.short_address);
+		}
+	});
 }
