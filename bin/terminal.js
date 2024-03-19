@@ -1,8 +1,6 @@
 import axios from "axios";
 import fs from "node:fs";
 
-// TODO: homework: make a scraper (comic?) (10 pages)
-
 const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
 if (!fs.existsSync("cache")) {
